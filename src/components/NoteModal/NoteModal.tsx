@@ -1,46 +1,39 @@
-import { useEffect, type MouseEvent } from "react";
-import ReactDOM from "react-dom";
-import css from "./NoteModal.module.css";
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import NoteForm from "../NoteForm/NoteForm";
+
+import css from "./NoteModal.module.css";
 
 interface NoteModalProps {
   onClose: () => void;
+  onSuccess: () => void;
 }
 
-export default function NoteModal({ onClose }: NoteModalProps) {
-  // useEffect для керування прокруткою сторінки.
-  // Він спрацьовує при монтуванні компонента (тобто, коли модалка відкривається)
-  // та очищається при розмонтуванні (коли модалка закривається).
+export default function NoteModal({ onClose, onSuccess }: NoteModalProps) {
   useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, []);
-
-  // Обробник клавіші Escape.
-  useEffect(() => {
-    const handleEscapeKey = (event: KeyboardEvent) => {
+    const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
     };
 
-    window.addEventListener("keydown", handleEscapeKey);
+    document.body.style.overflow = "hidden";
+
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.removeEventListener("keydown", handleEscapeKey);
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "auto";
     };
   }, [onClose]);
 
-  // Обробник кліку по бекдропу
-  const handleBackdropClick = (event: MouseEvent<HTMLDivElement>) => {
+  const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
-  return ReactDOM.createPortal(
+  return createPortal(
     <div
       className={css.backdrop}
       role="dialog"
@@ -48,7 +41,7 @@ export default function NoteModal({ onClose }: NoteModalProps) {
       onClick={handleBackdropClick}
     >
       <div className={css.modal}>
-        <NoteForm onCancel={onClose} onModalClose={onClose} />
+        {<NoteForm onClose={onClose} onSuccess={onSuccess} />}
       </div>
     </div>,
     document.body

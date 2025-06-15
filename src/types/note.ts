@@ -1,10 +1,14 @@
 export interface Note {
   id: number;
-  title: string; // Заголовок нотатки
-  content: string; // Текст нотатки
-  createdAt: string; // Дата створення
-  updatedAt: string; // Дата останнього оновлення
-  tag: NoteTag;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  tag: string;
 }
 
-export type NoteTag = "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
+export interface NewNoteData {
+  title: string;
+  content: string;
+  tag: string;
+}
