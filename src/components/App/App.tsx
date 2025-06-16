@@ -17,15 +17,13 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [debounceSearchTerm] = useDebounce(searchTerm, 1000);
-  const perPage = 12;
-
+  
   const { data, isLoading, isError } = useQuery({
     queryKey: ["notes", debounceSearchTerm, currentPage],
     queryFn: () => fetchNotes(debounceSearchTerm, currentPage),
-
     placeholderData: keepPreviousData,
   });
-
+  
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
